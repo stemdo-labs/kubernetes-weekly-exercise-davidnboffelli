@@ -44,7 +44,3 @@ spec:
               secretKeyRef:
                 name: phpmyadmin-credentials
                 key: DB_ROOT_PASSWORD
-
-# PMA_HOST - define address/host name of the MySQL server
-# PMA_PORT - define port of the MySQL server
-# PMA_USER and PMA_PASSWORD
