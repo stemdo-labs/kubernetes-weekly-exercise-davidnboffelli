@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: recursos
+spec:
+  limits:
+  - default:
+      memory: "2392240.8Ki"
+      cpu: "3.6"
+    defaultRequest:
+      memory: "1Mi"
+      cpu: "0.5"
+    type: Container

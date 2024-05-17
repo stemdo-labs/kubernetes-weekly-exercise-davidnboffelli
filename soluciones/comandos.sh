@@ -47,11 +47,38 @@ kubectl create namespace phpmyadmin
 # - un service para exponer phpmyadmin (service-phpmyadmin.yaml)
 # phpmyadmin debe ser accesible sin requerir autenticación (con fines de desarrollo).
 
+#Para desplegar todos estos recursos, ubicarse en la carpeta actual y usar el comando:
+kubectl apply -f . 
+
 #Para probar el servicio laravel creado:
-kubectl port-forward service/laravel-service 9988:8000 -n laravel
+kubectl port-forward service/phpmyadmin-service 9988:80 -n phpmyadmin
 #Luego entrar a localhost:9988 en el navegador
 #Adjunto imagen con el resultado en el navegador
 
 ############################################################################################################################
 ### PARTE 3 ###
 ############################################################################################################################
+# CPU cluster = 12 => 60% = 7,2
+# memory cluster = 7974136Ki => 60% = 4784481,6Ki
+# Por cada nodo:
+# Límite CPU: 3,6
+# Límite memoria: 2392240,8Ki
+
+#Creo un LimitRange (limitpernode.yaml) y lo aplico a ambos namespaces
+kubectl apply -f limitpernode.yaml -n laravel
+kubectl apply -f limitpernode.yaml -n phpmyadmin
+
+#La capacidad del cluster/nodo la obtuve con el comando:
+kubectl describe node minikube
+#Adjunto imagen clusterCapacity.png
+
+#Reviso los limites de ambos nameplaces con los comandos:
+kubectl describe namespace laravel
+kubectl describe namespace phpmyadmin
+
+#Adjunto imagenes phpmyadminLimits.png y laravelLimits.png
+
+#Me gustaría feedback sobre esta parte del ejercicio. No estoy muy seguro de haberlo hecho de la mejor forma posible
+#Le estoy asignando límites fijos e iguales a ambos namespaces. ¿Como sé yo que, al escalarlos, consumen parecido? En realidad no lo se.
+#Tiene que haber alguna forma de que la asignación de límites se haga de forma dinámicamente. Según necesidad.
+#Si a un namespace le sobran recursos, que lo consuma el otro
