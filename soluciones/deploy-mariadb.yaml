@@ -15,18 +15,27 @@ spec:
     spec:
       containers:
       - name: mariadbapp
-        image: bitnami/mariadb:latest
+        image: mariadb:11.4.1-rc
         ports:
         - containerPort: 3306
-        volumeMounts:
-          - name:  mariadb-data
-            mountPath: /bitnami/mariadb
         env:
-          - name: ALLOW_EMPTY_PASSWORD
-            value: "yes"
           - name: MARIADB_USER
-            value: bn_myapp
+            valueFrom:
+              configMapKeyRef:
+                name: datos-mariadb
+                key: DB_DATABASE_USER
+          - name: MARIADB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-credentials
+                key: DB_DATABASE_PASSWORD
+          - name: MARIADB_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-credentials
+                key: DB_ROOT_PASSWORD
           - name: MARIADB_DATABASE
-            value: bitnami_myapp
-      volumes:
-      - name:  mariadb-data
+            valueFrom:
+              configMapKeyRef:
+                name: datos-mariadb
+                key: DB_DATABASE
