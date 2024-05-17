@@ -1,0 +1,44 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: deploy-laravel
+  namespace: laravel
+  labels:
+    app: laravelapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: laravelapp
+  template:
+    metadata:
+      labels:
+        app: laravelapp
+    spec:
+      containers:
+      - name: laravelapp
+        image: bitnami/laravel:11.0.8
+        ports:
+          - containerPort: 8000
+        env:
+          - name: LARAVEL_DATABASE_TYPE
+            value: postgres
+          - name: LARAVEL_DATABASE_HOST
+            value: service-postgres
+#          - name: LARAVEL_DATABASE_PORT_NUMBER
+#            value: "3306"
+          - name: LARAVEL_DATABASE_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: datos-postgres-env
+                key: POSTGRES_DB
+          - name: LARAVEL_DATABASE_USER
+            valueFrom:
+              configMapKeyRef:
+                name: datos-postgres-env
+                key: POSTGRES_USER
+          - name: LARAVEL_DATABASE_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: datos-postgres-env
+                key: POSTGRES_PASSWORD
