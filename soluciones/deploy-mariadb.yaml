@@ -1,0 +1,32 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: mariadb-deploy
+  namespace: laravel
+spec:
+  selector:  
+    matchLabels:
+      app: mariadbapp
+  replicas: 1
+  template:  
+    metadata:
+      labels:
+        app: mariadbapp
+    spec:
+      containers:
+      - name: mariadbapp
+        image: bitnami/mariadb:latest
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+          - name:  mariadb-data
+            mountPath: /bitnami/mariadb
+        env:
+          - name: ALLOW_EMPTY_PASSWORD
+            value: "yes"
+          - name: MARIADB_USER
+            value: bn_myapp
+          - name: MARIADB_DATABASE
+            value: bitnami_myapp
+      volumes:
+      - name:  mariadb-data

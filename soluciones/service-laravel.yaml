@@ -1,15 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: service-laravel
+  name: laravel-service
   namespace: laravel
-  labels:
-    app: laravelapp
 spec:
-  type: NodePort
-  ports:
-  - port: 8000
-    targetPort: 8000
-    protocol: TCP
+  type: ClusterIP
+  #type: NodePort
   selector:
-    app: laravelapp
+    app: laravel
+  ports:
+    - port: 8000
